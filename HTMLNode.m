@@ -413,6 +413,10 @@ NSString * rawContentsOfNode(xmlNode * node)
 }
 
 -(NSArray*)nodesForXPath:(NSString*)query{
+    if (!query || ![query length]) {
+        NSLog(@"Unable to create XPath context. The query is empty.");
+        return nil;
+    }
     xmlDocPtr doc = _node->doc;
     
     xmlXPathContextPtr xpathCtx; 
