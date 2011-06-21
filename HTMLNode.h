@@ -57,6 +57,8 @@ typedef enum
 //Finds all children with a matching attribute
 -(NSArray*)findChildrenWithAttribute:(NSString*)attribute matchingName:(NSString*)className allowPartial:(BOOL)partial;
 
+-(NSArray*)nodesForXPath:(NSString*)xpath;
+
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
 

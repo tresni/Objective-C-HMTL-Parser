@@ -8,6 +8,9 @@
 
 #import "HTMLNode.h"
 #import <libxml/HTMLtree.h>
+#import <libxml/xpath.h>
+#import <libxml/xpathInternals.h>
+
 
 @implementation HTMLNode
 
@@ -408,5 +411,52 @@ NSString * rawContentsOfNode(xmlNode * node)
 -(NSString*)rawContents {
 	return rawContentsOfNode(_node);
 }
+
+-(NSArray*)nodesForXPath:(NSString*)query{
+    if (!query || ![query length]) {
+        NSLog(@"Unable to create XPath context. The query is empty.");
+        return nil;
+    }
+    xmlDocPtr doc = _node->doc;
+    
+    xmlXPathContextPtr xpathCtx; 
+    xmlXPathObjectPtr xpathObj; 
+    
+    /* Create xpath evaluation context */
+    xpathCtx = xmlXPathNewContext(doc);
+    if(xpathCtx == NULL)
+	{
+		NSLog(@"Unable to create XPath context.");
+		return nil;
+    }
+    
+    /* Evaluate xpath expression */
+    xpathObj = xmlXPathEvalExpression((xmlChar *)[query cStringUsingEncoding:NSUTF8StringEncoding], xpathCtx);
+    if(xpathObj == NULL) {
+		NSLog(@"Unable to evaluate XPath.");
+		return nil;
+    }
+	
+	xmlNodeSetPtr nodes = xpathObj->nodesetval;
+	if (!nodes)
+	{
+		NSLog(@"Nodes was nil.");
+		return nil;
+	}
+	
+	NSMutableArray *resultNodes = [NSMutableArray array];
+	for (NSInteger i = 0; i < nodes->nodeNr; i++)
+	{
+        HTMLNode* node = [[[HTMLNode alloc] initWithXMLNode:nodes->nodeTab[i]] autorelease];
+        [resultNodes addObject:node];
+	}
+    
+    /* Cleanup */
+    xmlXPathFreeObject(xpathObj);
+    xmlXPathFreeContext(xpathCtx); 
+    
+    return resultNodes;
+}
+
 
 @end
