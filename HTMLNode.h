@@ -33,7 +33,7 @@ typedef enum
 	HTMLBlockQuoteNode,
 } HTMLNodeType;
 
-@interface HTMLNode : NSObject 
+@interface HTMLNode : NSObject <NSCopying>
 {
 @public
 	xmlNode * _node;
@@ -107,5 +107,12 @@ HTMLNodeType nodeType(xmlNode* node);
 NSString * allNodeContents(xmlNode*node);
 NSString * rawContentsOfNode(xmlNode * node);
 
+#pragma mark - Flip Studio mods
+
+- (NSArray *)childrenForXPath:(NSString *)xpath;
+- (void)setContent:(NSString *)content;
+- (void)addNextSibling:(HTMLNode *)child;
+- (void)addChild:(HTMLNode *)child;
+- (void)removeFromParent;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "HTMLNode.h"
+#import <libxml/xpath.h>
 #import <libxml/HTMLtree.h>
 
 @implementation HTMLNode
@@ -407,6 +408,71 @@ NSString * rawContentsOfNode(xmlNode * node)
 
 -(NSString*)rawContents {
 	return rawContentsOfNode(_node);
+}
+
+#pragma mark - Flip Studio mods
+
+- (NSArray *)childrenForXPath:(NSString *)xpath
+{
+	NSMutableArray *children = [[NSMutableArray alloc] init];
+	
+	xmlXPathContextPtr context;
+    context = xmlXPathNewContext(_node->doc);
+	context->node = _node;
+	
+    xmlXPathObjectPtr result;
+    result = xmlXPathEvalExpression((xmlChar *)[xpath UTF8String], context);
+    xmlXPathFreeContext (context);
+	
+    xmlNodeSetPtr nodeSet;
+    nodeSet = result->nodesetval;
+    if (!xmlXPathNodeSetIsEmpty(nodeSet)) 
+	{
+        int i;
+        for (i = 0; i < nodeSet->nodeNr; i++)
+		{
+            xmlNodePtr nodePtr;
+            nodePtr = nodeSet->nodeTab[i];
+			
+			HTMLNode *nNode = [[HTMLNode alloc] initWithXMLNode:nodePtr];
+			[children addObject:nNode];
+            [nNode release];
+        }
+    }
+    xmlXPathFreeObject(result);
+	
+	NSArray *array = [NSArray arrayWithArray:children];
+	[children release];
+	
+	return array;
+}
+
+- (void)setContent:(NSString *)content
+{
+	if (content != nil) 
+		xmlNodeSetContent(_node, (xmlChar *)[content UTF8String]);
+}
+
+- (void)addNextSibling:(HTMLNode *)child
+{
+	xmlAddNextSibling(_node, child->_node);
+}
+
+- (void)addChild:(HTMLNode *)child
+{
+	child->_node = xmlAddChild(_node, child->_node);
+}
+
+- (void)removeFromParent
+{
+	xmlUnlinkNode(_node);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+	xmlNodePtr nodeCopy = xmlCopyNode(_node, 1);
+	
+	return [[[HTMLNode allocWithZone:zone] initWithXMLNode:nodeCopy] autorelease];
 }
 
 @end
