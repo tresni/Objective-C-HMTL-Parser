@@ -112,6 +112,7 @@ NSString * rawContentsOfNode(xmlNode * node);
 - (NSArray *)childrenForXPath:(NSString *)xpath;
 - (void)setContent:(NSString *)content;
 - (void)addNextSibling:(HTMLNode *)child;
+- (void)addPrevSibling:(HTMLNode *)child;
 - (void)addChild:(HTMLNode *)child;
 - (void)removeFromParent;
 

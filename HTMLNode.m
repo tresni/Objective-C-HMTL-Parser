@@ -458,6 +458,11 @@ NSString * rawContentsOfNode(xmlNode * node)
 	xmlAddNextSibling(_node, child->_node);
 }
 
+- (void)addPrevSibling:(HTMLNode *)child
+{
+	xmlAddPrevSibling(_node, child->_node);
+}
+
 - (void)addChild:(HTMLNode *)child
 {
 	child->_node = xmlAddChild(_node, child->_node);
