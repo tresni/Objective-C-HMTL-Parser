@@ -43,6 +43,8 @@ typedef enum
 //Use [parser doc] to get the root Node
 -(id)initWithXMLNode:(xmlNode*)xmlNode;
 
++(id)nodeWithName:(NSString *)name;
+
 //Returns a single child of class
 -(HTMLNode*)findChildOfClass:(NSString*)className;
 
@@ -59,6 +61,12 @@ typedef enum
 
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
+
+-(void)setAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)addAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)removeAttributeNamed:(NSString *)name;
 
 //Find childer with the specified tag name
 -(NSArray*)findChildTags:(NSString*)tagName;

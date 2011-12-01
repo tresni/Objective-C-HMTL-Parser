@@ -296,6 +296,36 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	return self;
 }
 
++ (id)nodeWithName:(NSString *)name
+{
+	xmlNode *n = xmlNewNode(NULL, (xmlChar *)[name UTF8String]);
+	
+	return [[[HTMLNode alloc] initWithXMLNode:n] autorelease];
+}
+
+- (void)setAttributeNamed:(NSString *)name withValue:(NSString *)value
+{
+	const char *nameStr = [name UTF8String];
+	const char *valueStr = [value UTF8String];
+	
+	setAttributeNamed(_node, nameStr, valueStr);
+}
+
+- (void)addAttributeNamed:(NSString *)name withValue:(NSString *)value
+{
+	const xmlChar *nameStr = (xmlChar *)[name UTF8String];
+	const xmlChar *valueStr = (xmlChar *)[value UTF8String];
+	
+	xmlNewProp(_node, nameStr, valueStr);
+}
+
+-(void)removeAttributeNamed:(NSString *)name
+{
+	const xmlChar *nameStr = (xmlChar *) [name UTF8String];
+	
+	xmlUnsetProp(_node, nameStr);
+}
+
 -(void)appendChildContentsToString:(NSMutableString*)string inNode:(xmlNode*)node
 {
 	if (node == NULL)
