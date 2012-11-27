@@ -29,7 +29,7 @@
 void setAttributeNamed(xmlNode * node, const char * nameStr, const char * value) {
 	
 	char * newVal = (char *)malloc(strlen(value)+1);
-	memcpy (newVal, value, strlen(value)+1);
+	memcpy(newVal, value, strlen(value)+1);
 
 	for(xmlAttrPtr attr = node->properties; NULL != attr; attr = attr->next)
 	{
