@@ -138,9 +138,9 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	
 }
 
--(void)findChildTags:(NSString*)tagName
-			 inXMLNode:(xmlNode *)node
-			 inArray:(NSMutableArray*)array
+-(void)findChildrenWithTag:(NSString*)tagName
+				 inXMLNode:(xmlNode *)node
+			 addingToArray:(NSMutableArray*)array
 {
 	xmlNode *cur_node = NULL;
 	const char * tagNameStr =	[tagName UTF8String];
@@ -157,22 +157,28 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 			
 		}
 		
-		[self findChildTags:tagName inXMLNode:cur_node->children inArray:array];
+		[self findChildrenWithTag:tagName inXMLNode:cur_node->children addingToArray:array];
 	}
 }
 
 
--(NSArray*)findChildTags:(NSString*)tagName
+-(NSArray*)findChildrenWithTag:(NSString*)tagName
 {
 	NSMutableArray * array = [NSMutableArray array];
 	
-	[self findChildTags:tagName inXMLNode:_node->children inArray:array];
+	[self findChildrenWithTag:tagName inXMLNode:_node->children addingToArray:array];
 	
 	return array;
 }
 
--(HTMLNode*)findChildTag:(NSString*)tagName
-				  inXMLNode:(xmlNode *)node
+-(NSArray*)findChildTags:(NSString*)tagName
+{
+	return [self findChildrenWithTag:tagName];
+}
+
+
+-(HTMLNode*)findChildWithTag:(NSString*)tagName
+				   inXMLNode:(xmlNode *)node
 {
 	xmlNode *cur_node = NULL;
 	const char * tagNameStr =	[tagName UTF8String];
@@ -184,7 +190,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 			return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:cur_node]);
 		}
 		
-		HTMLNode * cNode = [self findChildTag:tagName inXMLNode:cur_node->children];
+		HTMLNode * cNode = [self findChildWithTag:tagName inXMLNode:cur_node->children];
 		if (cNode != NULL)
 		{
 			return cNode;
@@ -194,11 +200,15 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	return NULL;
 }
 
--(HTMLNode*)findChildTag:(NSString*)tagName
+-(HTMLNode*)findChildWithTag:(NSString*)tagName
 {
-	return [self findChildTag:tagName inXMLNode:_node->children];
+	return [self findChildWithTag:tagName inXMLNode:_node->children];
 }
 
+-(HTMLNode*)findChildTag:(NSString*)tagName;
+{
+	return [self findChildWithTag:tagName];
+}
 
 -(NSArray*)children
 {

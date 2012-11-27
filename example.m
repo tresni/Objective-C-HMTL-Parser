@@ -34,7 +34,7 @@ int main(int argc, const char * argv[])
 		
 		HTMLNode *bodyNode = [parser body];
 		
-		NSArray *inputNodes = [bodyNode findChildTags:@"input"];
+		NSArray *inputNodes = [bodyNode findChildrenWithTag:@"input"];
 		
 		for (HTMLNode *inputNode in inputNodes) {
 			if ([[inputNode getAttributeNamed:@"name"] isEqualToString:@"input2"]) {
@@ -42,7 +42,7 @@ int main(int argc, const char * argv[])
 			}
 		}
 		
-		NSArray *spanNodes = [bodyNode findChildTags:@"span"];
+		NSArray *spanNodes = [bodyNode findChildrenWithTag:@"span"];
 		
 		for (HTMLNode *spanNode in spanNodes) {
 			if ([[spanNode getAttributeNamed:@"class"] isEqualToString:@"spantext"]) {

@@ -25,7 +25,7 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[self doc] findChildTag:@"html"];
+	return [[self doc] findChildWithTag:@"html"];
 }
 
 -(HTMLNode*)head
@@ -33,7 +33,7 @@
 	if (_doc == NULL)
 		return NULL;
 
-	return [[self doc] findChildTag:@"head"];
+	return [[self doc] findChildWithTag:@"head"];
 }
 
 -(HTMLNode*)body
@@ -41,7 +41,7 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[self doc] findChildTag:@"body"];
+	return [[self doc] findChildWithTag:@"body"];
 }
 
 -(id)initWithString:(NSString*)string

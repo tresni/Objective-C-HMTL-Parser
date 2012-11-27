@@ -74,11 +74,13 @@ typedef enum
 
 -(void)removeAttributeNamed:(NSString *)name;
 
-//Find childer with the specified tag name
--(NSArray*)findChildTags:(NSString*)tagName;
+//Find children with the specified tag name
+-(NSArray*)findChildrenWithTag:(NSString*)tagName;
+-(NSArray*)findChildTags:(NSString*)tagName DEPRECATED_ATTRIBUTE;
 
 //Looks for a tag name e.g. "h3"
--(HTMLNode*)findChildTag:(NSString*)tagName;
+-(HTMLNode*)findChildWithTag:(NSString*)tagName;
+-(HTMLNode*)findChildTag:(NSString*)tagName DEPRECATED_ATTRIBUTE;
 
 //Returns the first child element
 -(HTMLNode*)firstChild;
