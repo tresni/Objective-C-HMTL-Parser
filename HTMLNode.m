@@ -314,8 +314,37 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	return self;
 }
 
--(void)appendChildContentsToString:(NSMutableString*)string
-							inNode:(xmlNode*)node
++ (id)nodeWithName:(NSString *)name
+{
+	xmlNode *n = xmlNewNode(NULL, (xmlChar *)[name UTF8String]);
+	
+	return [[[HTMLNode alloc] initWithXMLNode:n] autorelease];
+}
+
+- (void)setAttributeNamed:(NSString *)name withValue:(NSString *)value
+{
+	const char *nameStr = [name UTF8String];
+	const char *valueStr = [value UTF8String];
+	
+	setAttributeNamed(_node, nameStr, valueStr);
+}
+
+- (void)addAttributeNamed:(NSString *)name withValue:(NSString *)value
+{
+	const xmlChar *nameStr = (xmlChar *)[name UTF8String];
+	const xmlChar *valueStr = (xmlChar *)[value UTF8String];
+	
+	xmlNewProp(_node, nameStr, valueStr);
+}
+
+-(void)removeAttributeNamed:(NSString *)name
+{
+	const xmlChar *nameStr = (xmlChar *) [name UTF8String];
+	
+	xmlUnsetProp(_node, nameStr);
+}
+
+-(void)appendChildContentsToString:(NSMutableString*)string inNode:(xmlNode*)node
 {
 	if (node == NULL)
 		return;
@@ -477,5 +506,74 @@ NSString * rawContentsOfNode(xmlNode * node)
     return resultNodes;
 }
 
+#pragma mark - Flip Studio mods
+
+- (NSArray *)childrenForXPath:(NSString *)xpath
+{
+	NSMutableArray *children = [[NSMutableArray alloc] init];
+	
+	xmlXPathContextPtr context;
+    context = xmlXPathNewContext(_node->doc);
+	context->node = _node;
+	
+    xmlXPathObjectPtr result;
+    result = xmlXPathEvalExpression((xmlChar *)[xpath UTF8String], context);
+    xmlXPathFreeContext (context);
+	
+    xmlNodeSetPtr nodeSet;
+    nodeSet = result->nodesetval;
+    if (!xmlXPathNodeSetIsEmpty(nodeSet)) 
+	{
+        int i;
+        for (i = 0; i < nodeSet->nodeNr; i++)
+		{
+            xmlNodePtr nodePtr;
+            nodePtr = nodeSet->nodeTab[i];
+			
+			HTMLNode *nNode = [[HTMLNode alloc] initWithXMLNode:nodePtr];
+			[children addObject:nNode];
+            [nNode release];
+        }
+    }
+    xmlXPathFreeObject(result);
+	
+	NSArray *array = [NSArray arrayWithArray:children];
+	[children release];
+	
+	return array;
+}
+
+- (void)setContent:(NSString *)content
+{
+	if (content != nil) 
+		xmlNodeSetContent(_node, (xmlChar *)[content UTF8String]);
+}
+
+- (void)addNextSibling:(HTMLNode *)child
+{
+	xmlAddNextSibling(_node, child->_node);
+}
+
+- (void)addPrevSibling:(HTMLNode *)child
+{
+	xmlAddPrevSibling(_node, child->_node);
+}
+
+- (void)addChild:(HTMLNode *)child
+{
+	child->_node = xmlAddChild(_node, child->_node);
+}
+
+- (void)removeFromParent
+{
+	xmlUnlinkNode(_node);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+	xmlNodePtr nodeCopy = xmlCopyNode(_node, 1);
+	
+	return [[[HTMLNode allocWithZone:zone] initWithXMLNode:nodeCopy] autorelease];
+}
 
 @end

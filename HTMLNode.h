@@ -33,7 +33,7 @@ typedef enum
 	HTMLBlockQuoteNode,
 } HTMLNodeType;
 
-@interface HTMLNode : NSObject 
+@interface HTMLNode : NSObject <NSCopying>
 {
 @public
 	xmlNode * _node;
@@ -42,6 +42,8 @@ typedef enum
 //Init with a lib xml node (shouldn't need to be called manually)
 //Use [parser doc] to get the root Node
 -(id)initWithXMLNode:(xmlNode*)xmlNode;
+
++(id)nodeWithName:(NSString *)name;
 
 //Returns a single child of class
 -(HTMLNode*)findChildOfClass:(NSString*)className;
@@ -65,6 +67,12 @@ typedef enum
 
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
+
+-(void)setAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)addAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)removeAttributeNamed:(NSString *)name;
 
 //Find childer with the specified tag name
 -(NSArray*)findChildTags:(NSString*)tagName;
@@ -113,5 +121,13 @@ HTMLNodeType nodeType(xmlNode* node);
 NSString * allNodeContents(xmlNode*node);
 NSString * rawContentsOfNode(xmlNode * node);
 
+#pragma mark - Flip Studio mods
+
+- (NSArray *)childrenForXPath:(NSString *)xpath;
+- (void)setContent:(NSString *)content;
+- (void)addNextSibling:(HTMLNode *)child;
+- (void)addPrevSibling:(HTMLNode *)child;
+- (void)addChild:(HTMLNode *)child;
+- (void)removeFromParent;
 
 @end
