@@ -466,7 +466,7 @@ NSString * rawContentsOfNode(xmlNode * node)
 	NSMutableArray *resultNodes = [NSMutableArray array];
 	for (NSInteger i = 0; i < nodes->nodeNr; i++)
 	{
-        HTMLNode* node = [[[HTMLNode alloc] initWithXMLNode:nodes->nodeTab[i]] autorelease];
+        HTMLNode* node = JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:nodes->nodeTab[i]]);
         [resultNodes addObject:node];
 	}
     
