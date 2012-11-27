@@ -92,6 +92,9 @@ typedef enum
 //Returns the html contents of the node 
 -(NSString*)rawContents;
 
+//Returns rawContents - surrounding tag
+-(NSString*)innerHTML;
+
 //Returns next sibling in tree
 -(HTMLNode*)nextSibling;
 

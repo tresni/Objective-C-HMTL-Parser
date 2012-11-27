@@ -460,6 +460,14 @@ NSString * rawContentsOfNode(xmlNode * node)
 	return rawContentsOfNode(_node);
 }
 
+-(NSString*)innerHTML {
+	NSMutableString *string = [NSMutableString string];
+	for (HTMLNode *child in [self children]) {
+		[string appendString:[child rawContents]];
+	}
+	return string;
+}
+
 -(NSArray*)nodesForXPath:(NSString*)query{
     if (!query || ![query length]) {
         NSLog(@"Unable to create XPath context. The query is empty.");
