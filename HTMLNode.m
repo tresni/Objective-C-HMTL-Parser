@@ -318,7 +318,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 {
 	xmlNode *n = xmlNewNode(NULL, (xmlChar *)[name UTF8String]);
 	
-	return [[[HTMLNode alloc] initWithXMLNode:n] autorelease];
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:n]);
 }
 
 - (void)setAttributeNamed:(NSString *)name withValue:(NSString *)value
@@ -532,13 +532,13 @@ NSString * rawContentsOfNode(xmlNode * node)
 			
 			HTMLNode *nNode = [[HTMLNode alloc] initWithXMLNode:nodePtr];
 			[children addObject:nNode];
-            [nNode release];
+            JX_RELEASE([nNode release]);
         }
     }
     xmlXPathFreeObject(result);
 	
 	NSArray *array = [NSArray arrayWithArray:children];
-	[children release];
+	JX_RELEASE([children release]);
 	
 	return array;
 }
@@ -573,7 +573,7 @@ NSString * rawContentsOfNode(xmlNode * node)
 {
 	xmlNodePtr nodeCopy = xmlCopyNode(_node, 1);
 	
-	return [[[HTMLNode allocWithZone:zone] initWithXMLNode:nodeCopy] autorelease];
+	return JX_AUTORELEASE([[HTMLNode allocWithZone:zone] initWithXMLNode:nodeCopy]);
 }
 
 @end
