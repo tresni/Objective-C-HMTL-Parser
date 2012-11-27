@@ -8,6 +8,7 @@
 
 #import "HTMLParser.h"
 
+#import "JXArcCompatibilityMacros.h"
 
 @implementation HTMLParser
 
@@ -16,7 +17,7 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[[HTMLNode alloc] initWithXMLNode:(xmlNode*)_doc] autorelease];
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:(xmlNode*)_doc]);
 }
 
 -(HTMLNode*)html
@@ -109,18 +110,19 @@
 
 	if (_data == nil || *error)
 	{
-		[_data release];
+		JX_RELEASE(_data);
 		return nil;
 	}
 	
 	self = [self initWithData:_data error:error];
 	
-	[_data release];
+	JX_RELEASE(_data);
 	
 	return self;
 }
 
 
+#if (JX_HAS_ARC == 0)
 -(void)dealloc
 {
 	if (_doc)
@@ -130,5 +132,6 @@
 	
 	[super dealloc];
 }
+#endif
 
 @end
