@@ -25,6 +25,7 @@ int main(int argc, const char * argv[])
 		"</ul>"
 		"<span class='spantext'><b>Hello World 1</b></span>"
 		"<span class='spantext'><b>Hello World 2</b></span>";
+		
 		HTMLParser *parser = [[HTMLParser alloc] initWithString:html error:&error];
 		
 		if (error) {
