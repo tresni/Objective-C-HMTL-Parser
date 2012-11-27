@@ -44,7 +44,8 @@
 	return [[self doc] findChildTag:@"body"];
 }
 
--(id)initWithString:(NSString*)string error:(NSError**)error
+-(id)initWithString:(NSString*)string
+			  error:(NSError**)error
 { 
 	if (self = [super init])
 	{
@@ -72,7 +73,8 @@
 	return self;
 }
 
--(id)initWithData:(NSData*)data error:(NSError**)error
+-(id)initWithData:(NSData*)data
+			error:(NSError**)error
 {
 	if (self = [super init])
 	{
@@ -103,7 +105,8 @@
 	return self;
 }
 
--(id)initWithContentsOfURL:(NSURL*)url error:(NSError**)error
+-(id)initWithContentsOfURL:(NSURL*)url
+					 error:(NSError**)error
 {
 	
 	NSData * _data = [[NSData alloc] initWithContentsOfURL:url options:0 error:error];
