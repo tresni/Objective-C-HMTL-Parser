@@ -18,7 +18,7 @@
 
 -(HTMLNode*)parent
 {
-	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->parent]);	
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->parent]);
 }
 
 -(HTMLNode*)nextSibling {
@@ -26,18 +26,18 @@
 }
 
 -(HTMLNode*)previousSibling {
-	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->prev]);	
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->prev]);
 }
 
 void setAttributeNamed(xmlNode * node, const char * nameStr, const char * value) {
 	
 	char * newVal = (char *)malloc(strlen(value)+1);
 	memcpy(newVal, value, strlen(value)+1);
-
+	
 	for(xmlAttrPtr attr = node->properties; NULL != attr; attr = attr->next)
 	{
 		if (strcmp((char*)attr->name, nameStr) == 0)
-		{				
+		{
 			for(xmlNode * child = attr->children; NULL != child; child = child->next)
 			{
 				free(child->content);
@@ -56,7 +56,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	for(xmlAttrPtr attr = node->properties; NULL != attr; attr = attr->next)
 	{
 		if (strcmp((char*)attr->name, nameStr) == 0)
-		{				
+		{
 			for(xmlNode * child = attr->children; NULL != child; child = child->next)
 			{
 				return [NSString stringWithCString:(void*)child->content encoding:NSUTF8StringEncoding];
@@ -70,7 +70,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 }
 
 -(NSString*)getAttributeNamed:(NSString*)name
-{	
+{
 	const char * nameStr = [name UTF8String];
 	
 	return getAttributeNamed(_node, nameStr);
@@ -91,13 +91,13 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 
 -(HTMLNode*)firstChild
 {
-	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->children]);	
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:_node->children]);
 }
 
 
 -(void)findChildrenWithAttribute:(const char*)attribute
 					matchingName:(const char*)className
-					   inXMLNode:(xmlNode *)node
+						inXMLNode:(xmlNode *)node
 						 inArray:(NSMutableArray*)array
 					allowPartial:(BOOL)partial
 {
@@ -105,13 +105,13 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	const char * classNameStr = className;
 	//BOOL found = NO;
 	
-    for (cur_node = node; cur_node; cur_node = cur_node->next) 
-	{				
+	for (cur_node = node; cur_node; cur_node = cur_node->next)
+	{
 		for(xmlAttrPtr attr = cur_node->properties; NULL != attr; attr = attr->next)
 		{
 			
 			if (strcmp((char*)attr->name, attribute) == 0)
-			{				
+			{
 				for(xmlNode * child = attr->children; NULL != child; child = child->next)
 				{
 					
@@ -120,7 +120,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 						match = YES;
 					else if (partial && strstr ((char*)child->content, classNameStr) != NULL)
 						match = YES;
-
+					
 					if (match)
 					{
 						//Found node
@@ -134,22 +134,22 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 		}
 		
 		[self findChildrenWithAttribute:attribute matchingName:className inXMLNode:cur_node->children inArray:array allowPartial:partial];
-	}	
+	}
 	
 }
 
 -(void)findChildTags:(NSString*)tagName
-		   inXMLNode:(xmlNode *)node
+			 inXMLNode:(xmlNode *)node
 			 inArray:(NSMutableArray*)array
 {
 	xmlNode *cur_node = NULL;
-	const char * tagNameStr =  [tagName UTF8String];
+	const char * tagNameStr =	[tagName UTF8String];
 	
 	if (tagNameStr == nil)
 		return;
 	
-    for (cur_node = node; cur_node; cur_node = cur_node->next) 
-	{				
+	for (cur_node = node; cur_node; cur_node = cur_node->next)
+	{
 		if (cur_node->name && strcmp((char*)cur_node->name, tagNameStr) == 0)
 		{
 			HTMLNode * node = JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:cur_node]);
@@ -158,7 +158,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 		}
 		
 		[self findChildTags:tagName inXMLNode:cur_node->children inArray:array];
-	}	
+	}
 }
 
 
@@ -172,13 +172,13 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 }
 
 -(HTMLNode*)findChildTag:(NSString*)tagName
-			   inXMLNode:(xmlNode *)node
+				  inXMLNode:(xmlNode *)node
 {
 	xmlNode *cur_node = NULL;
-	const char * tagNameStr =  [tagName UTF8String];
+	const char * tagNameStr =	[tagName UTF8String];
 	
-    for (cur_node = node; cur_node; cur_node = cur_node->next) 
-	{				
+	for (cur_node = node; cur_node; cur_node = cur_node->next)
+	{
 		if (cur_node && cur_node->name && strcmp((char*)cur_node->name, tagNameStr) == 0)
 		{
 			return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:cur_node]);
@@ -189,7 +189,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 		{
 			return cNode;
 		}
-	}	
+	}
 	
 	return NULL;
 }
@@ -203,10 +203,10 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 -(NSArray*)children
 {
 	xmlNode *cur_node = NULL;
-	NSMutableArray * array = [NSMutableArray array]; 
-
-	for (cur_node = _node->children; cur_node; cur_node = cur_node->next) 
-	{	
+	NSMutableArray * array = [NSMutableArray array];
+	
+	for (cur_node = _node->children; cur_node; cur_node = cur_node->next)
+	{
 		HTMLNode * node = JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:cur_node]);
 		[array addObject:node];
 	}
@@ -214,7 +214,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	return array;
 }
 
-/*
+#if 0
 -(NSString*)description
 {
 	NSString * string = [NSString stringWithFormat:@"<%s>%@\n", _node->name, [self contents]];
@@ -225,9 +225,10 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	}
 	
 	string = [string stringByAppendingString:[NSString stringWithFormat:@"<%s>\n", _node->name]];
-
+	
 	return string;
-}*/
+}
+#endif
 
 -(HTMLNode*)findChildWithAttribute:(const char*)attribute
 					  matchingName:(const char*)name
@@ -237,16 +238,16 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	xmlNode *cur_node = NULL;
 	const char * classNameStr = name;
 	//BOOL found = NO;
-
+	
 	if (node == NULL)
 		return NULL;
 	
-    for (cur_node = node; cur_node; cur_node = cur_node->next) 
-	{		
+	for (cur_node = node; cur_node; cur_node = cur_node->next)
+	{
 		for(xmlAttrPtr attr = cur_node->properties; NULL != attr; attr = attr->next)
-		{			
+		{
 			if (strcmp((char*)attr->name, attribute) == 0)
-			{				
+			{
 				for(xmlNode * child = attr->children; NULL != child; child = child->next)
 				{
 					
@@ -257,7 +258,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 						match = YES;
 					
 					if (match)
-					{					
+					{
 						return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:cur_node]);
 					}
 				}
@@ -270,8 +271,8 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 		{
 			return cNode;
 		}
-	}	
-		
+	}
+	
 	return NULL;
 }
 
@@ -283,8 +284,8 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 }
 
 -(HTMLNode*)findChildOfClass:(NSString*)className
-{	
-	HTMLNode * node = [self findChildWithAttribute:"class" matchingName:[className UTF8String]  inXMLNode:_node->children allowPartial:NO];
+{
+	HTMLNode * node = [self findChildWithAttribute:"class" matchingName:[className UTF8String]	 inXMLNode:_node->children allowPartial:NO];
 	return node;
 }
 
@@ -293,7 +294,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 						allowPartial:(BOOL)partial
 {
 	NSMutableArray * array = [NSMutableArray array];
-
+	
 	[self findChildrenWithAttribute:[attribute UTF8String] matchingName:[className UTF8String] inXMLNode:_node->children inArray:array allowPartial:partial];
 	
 	return array;
@@ -301,7 +302,7 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 
 
 -(NSArray*)findChildrenOfClass:(NSString*)className
-{	
+{
 	return [self findChildrenWithAttribute:@"class" matchingName:className allowPartial:NO];
 }
 
@@ -349,11 +350,11 @@ NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 	if (node == NULL)
 		return;
 	
-	xmlNode *cur_node = NULL;	
-    for (cur_node = node; cur_node; cur_node = cur_node->next) 
+	xmlNode *cur_node = NULL;
+	for (cur_node = node; cur_node; cur_node = cur_node->next)
 	{
 		if (cur_node->content)
-		{			
+		{
 			[string appendString:[NSString stringWithCString:(void*)cur_node->content encoding:NSUTF8StringEncoding]];
 		}
 		
@@ -434,20 +435,20 @@ NSString * allNodeContents(xmlNode*node)
 }
 
 NSString * rawContentsOfNode(xmlNode * node)
-{	
+{
 	xmlBufferPtr buffer = xmlBufferCreateSize(1000);
 	xmlOutputBufferPtr buf = xmlOutputBufferCreateBuffer(buffer, NULL);
 	
 	htmlNodeDumpOutput(buf, node->doc, node, (const char*)node->doc->encoding);
-		
+	
 	xmlOutputBufferFlush(buf);
-		
+	
 	NSString * string = nil;
 	
 	if (buffer->content) {
 		string = JX_AUTORELEASE([[NSString alloc] initWithBytes:(const void *)xmlBufferContent(buffer)
 														 length:xmlBufferLength(buffer)
-													   encoding:NSUTF8StringEncoding]);
+														encoding:NSUTF8StringEncoding]);
 	}
 	
 	xmlOutputBufferClose(buf);
@@ -469,29 +470,29 @@ NSString * rawContentsOfNode(xmlNode * node)
 }
 
 -(NSArray*)nodesForXPath:(NSString*)query{
-    if (!query || ![query length]) {
-        NSLog(@"Unable to create XPath context. The query is empty.");
-        return nil;
-    }
-    xmlDocPtr doc = _node->doc;
-    
-    xmlXPathContextPtr xpathCtx; 
-    xmlXPathObjectPtr xpathObj; 
-    
-    /* Create xpath evaluation context */
-    xpathCtx = xmlXPathNewContext(doc);
-    if(xpathCtx == NULL)
+	if (!query || ![query length]) {
+		NSLog(@"Unable to create XPath context. The query is empty.");
+		return nil;
+	}
+	xmlDocPtr doc = _node->doc;
+	
+	xmlXPathContextPtr xpathCtx;
+	xmlXPathObjectPtr xpathObj;
+	
+	/* Create xpath evaluation context */
+	xpathCtx = xmlXPathNewContext(doc);
+	if(xpathCtx == NULL)
 	{
 		NSLog(@"Unable to create XPath context.");
 		return nil;
-    }
-    
-    /* Evaluate xpath expression */
-    xpathObj = xmlXPathEvalExpression((xmlChar *)[query cStringUsingEncoding:NSUTF8StringEncoding], xpathCtx);
-    if(xpathObj == NULL) {
+	}
+	
+	/* Evaluate xpath expression */
+	xpathObj = xmlXPathEvalExpression((xmlChar *)[query cStringUsingEncoding:NSUTF8StringEncoding], xpathCtx);
+	if(xpathObj == NULL) {
 		NSLog(@"Unable to evaluate XPath.");
 		return nil;
-    }
+	}
 	
 	xmlNodeSetPtr nodes = xpathObj->nodesetval;
 	if (!nodes)
@@ -503,15 +504,15 @@ NSString * rawContentsOfNode(xmlNode * node)
 	NSMutableArray *resultNodes = [NSMutableArray array];
 	for (NSInteger i = 0; i < nodes->nodeNr; i++)
 	{
-        HTMLNode* node = JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:nodes->nodeTab[i]]);
-        [resultNodes addObject:node];
+		HTMLNode* node = JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:nodes->nodeTab[i]]);
+		[resultNodes addObject:node];
 	}
-    
-    /* Cleanup */
-    xmlXPathFreeObject(xpathObj);
-    xmlXPathFreeContext(xpathCtx); 
-    
-    return resultNodes;
+	
+	/* Cleanup */
+	xmlXPathFreeObject(xpathObj);
+	xmlXPathFreeContext(xpathCtx);
+	
+	return resultNodes;
 }
 
 #pragma mark - Flip Studio mods
@@ -521,29 +522,29 @@ NSString * rawContentsOfNode(xmlNode * node)
 	NSMutableArray *children = [[NSMutableArray alloc] init];
 	
 	xmlXPathContextPtr context;
-    context = xmlXPathNewContext(_node->doc);
+	context = xmlXPathNewContext(_node->doc);
 	context->node = _node;
 	
-    xmlXPathObjectPtr result;
-    result = xmlXPathEvalExpression((xmlChar *)[xpath UTF8String], context);
-    xmlXPathFreeContext (context);
+	xmlXPathObjectPtr result;
+	result = xmlXPathEvalExpression((xmlChar *)[xpath UTF8String], context);
+	xmlXPathFreeContext (context);
 	
-    xmlNodeSetPtr nodeSet;
-    nodeSet = result->nodesetval;
-    if (!xmlXPathNodeSetIsEmpty(nodeSet)) 
+	xmlNodeSetPtr nodeSet;
+	nodeSet = result->nodesetval;
+	if (!xmlXPathNodeSetIsEmpty(nodeSet)) 
 	{
-        int i;
-        for (i = 0; i < nodeSet->nodeNr; i++)
+		int i;
+		for (i = 0; i < nodeSet->nodeNr; i++)
 		{
-            xmlNodePtr nodePtr;
-            nodePtr = nodeSet->nodeTab[i];
+			xmlNodePtr nodePtr;
+			nodePtr = nodeSet->nodeTab[i];
 			
 			HTMLNode *nNode = [[HTMLNode alloc] initWithXMLNode:nodePtr];
 			[children addObject:nNode];
-            JX_RELEASE([nNode release]);
-        }
-    }
-    xmlXPathFreeObject(result);
+			JX_RELEASE([nNode release]);
+		}
+	}
+	xmlXPathFreeObject(result);
 	
 	NSArray *array = [NSArray arrayWithArray:children];
 	JX_RELEASE([children release]);
