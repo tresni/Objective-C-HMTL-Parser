@@ -61,6 +61,8 @@ typedef enum
 						matchingName:(NSString*)className
 						allowPartial:(BOOL)partial;
 
+-(NSArray*)nodesForXPath:(NSString*)xpath;
+
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
 
