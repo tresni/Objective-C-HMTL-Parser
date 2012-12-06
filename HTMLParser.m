@@ -87,10 +87,13 @@
 			const char *enc = CFStringGetCStringPtr(cfencstr, 0);
 			//_doc = htmlParseDoc((xmlChar*)[data bytes], enc);
 			
-			_doc = htmlReadDoc((xmlChar*)[data bytes],
-							 "",
-							enc,
-							XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
+            
+            _doc = htmlReadMemory((char *)[data bytes],
+                                 (int)[data length],
+                                 "",
+                                 enc,
+                                  XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
+
 		}
 		else
 		{
