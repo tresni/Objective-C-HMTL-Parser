@@ -8,6 +8,7 @@
 
 #import "HTMLParser.h"
 
+#import "JXArcCompatibilityMacros.h"
 
 @implementation HTMLParser
 
@@ -16,7 +17,7 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[HTMLNode alloc] initWithXMLNode:(xmlNode*)_doc];
+	return JX_AUTORELEASE([[HTMLNode alloc] initWithXMLNode:(xmlNode*)_doc]);
 }
 
 -(HTMLNode*)html
@@ -24,7 +25,7 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[self doc] findChildTag:@"html"];
+	return [[self doc] findChildWithTag:@"html"];
 }
 
 -(HTMLNode*)head
@@ -32,7 +33,7 @@
 	if (_doc == NULL)
 		return NULL;
 
-	return [[self doc] findChildTag:@"head"];
+	return [[self doc] findChildWithTag:@"head"];
 }
 
 -(HTMLNode*)body
@@ -40,10 +41,11 @@
 	if (_doc == NULL)
 		return NULL;
 	
-	return [[self doc] findChildTag:@"body"];
+	return [[self doc] findChildWithTag:@"body"];
 }
 
--(id)initWithString:(NSString*)string error:(NSError**)error
+-(id)initWithString:(NSString*)string
+			  error:(NSError**)error
 { 
 	if (self = [super init])
 	{
@@ -71,7 +73,8 @@
 	return self;
 }
 
--(id)initWithData:(NSData*)data error:(NSError**)error
+-(id)initWithData:(NSData*)data
+			error:(NSError**)error
 {
 	if (self = [super init])
 	{
@@ -102,18 +105,36 @@
 	return self;
 }
 
--(id)initWithContentsOfURL:(NSURL*)url error:(NSError**)error
+-(id)initWithContentsOfURL:(NSURL*)url
+					 error:(NSError**)error
 {
 	
 	NSData * _data = [[NSData alloc] initWithContentsOfURL:url options:0 error:error];
 
 	if (_data == nil || *error)
 	{
+		JX_RELEASE(_data);
 		return nil;
 	}
 	
 	self = [self initWithData:_data error:error];
 	
+	JX_RELEASE(_data);
+	
 	return self;
 }
+
+
+#if (JX_HAS_ARC == 0)
+-(void)dealloc
+{
+	if (_doc)
+	{
+		xmlFreeDoc(_doc);
+	}
+	
+	[super dealloc];
+}
+#endif
+
 @end

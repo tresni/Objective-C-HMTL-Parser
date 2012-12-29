@@ -33,7 +33,7 @@ typedef enum
 	HTMLBlockQuoteNode,
 } HTMLNodeType;
 
-@interface HTMLNode : NSObject 
+@interface HTMLNode : NSObject <NSCopying>
 {
 @public
 	xmlNode * _node;
@@ -42,6 +42,8 @@ typedef enum
 //Init with a lib xml node (shouldn't need to be called manually)
 //Use [parser doc] to get the root Node
 -(id)initWithXMLNode:(xmlNode*)xmlNode;
+
++(id)nodeWithName:(NSString *)name;
 
 //Returns a single child of class
 -(HTMLNode*)findChildOfClass:(NSString*)className;
@@ -52,19 +54,33 @@ typedef enum
 //Finds a single child with a matching attribute 
 //set allowPartial to match partial matches 
 //e.g. <img src="http://www.google.com> [findChildWithAttribute:@"src" matchingName:"google.com" allowPartial:TRUE]
--(HTMLNode*)findChildWithAttribute:(NSString*)attribute matchingName:(NSString*)className allowPartial:(BOOL)partial;
+-(HTMLNode*)findChildWithAttribute:(NSString*)attribute
+					  matchingName:(NSString*)className
+					  allowPartial:(BOOL)partial;
 
 //Finds all children with a matching attribute
--(NSArray*)findChildrenWithAttribute:(NSString*)attribute matchingName:(NSString*)className allowPartial:(BOOL)partial;
+-(NSArray*)findChildrenWithAttribute:(NSString*)attribute
+						matchingName:(NSString*)className
+						allowPartial:(BOOL)partial;
+
+-(NSArray*)nodesForXPath:(NSString*)xpath;
 
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
 
-//Find childer with the specified tag name
--(NSArray*)findChildTags:(NSString*)tagName;
+-(void)setAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)addAttributeNamed:(NSString *)name withValue:(NSString *)value;
+
+-(void)removeAttributeNamed:(NSString *)name;
+
+//Find children with the specified tag name
+-(NSArray*)findChildrenWithTag:(NSString*)tagName;
+-(NSArray*)findChildTags:(NSString*)tagName DEPRECATED_ATTRIBUTE;
 
 //Looks for a tag name e.g. "h3"
--(HTMLNode*)findChildTag:(NSString*)tagName;
+-(HTMLNode*)findChildWithTag:(NSString*)tagName;
+-(HTMLNode*)findChildTag:(NSString*)tagName DEPRECATED_ATTRIBUTE;
 
 //Returns the first child element
 -(HTMLNode*)firstChild;
@@ -110,5 +126,13 @@ HTMLNodeType nodeType(xmlNode* node);
 NSString * allNodeContents(xmlNode*node);
 NSString * rawContentsOfNode(xmlNode * node);
 
+#pragma mark - Flip Studio mods
+
+- (NSArray *)childrenForXPath:(NSString *)xpath;
+- (void)setContent:(NSString *)content;
+- (void)addNextSibling:(HTMLNode *)child;
+- (void)addPrevSibling:(HTMLNode *)child;
+- (void)addChild:(HTMLNode *)child;
+- (void)removeFromParent;
 
 @end

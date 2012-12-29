@@ -18,9 +18,12 @@
 	htmlDocPtr _doc;
 }
 
--(id)initWithContentsOfURL:(NSURL*)url error:(NSError**)error;
--(id)initWithData:(NSData*)data error:(NSError**)error;
--(id)initWithString:(NSString*)string error:(NSError**)error;
+-(id)initWithContentsOfURL:(NSURL*)url
+					 error:(NSError**)error;
+-(id)initWithData:(NSData*)data
+			error:(NSError**)error;
+-(id)initWithString:(NSString*)string
+			  error:(NSError**)error;
 
 //Returns the doc tag
 -(HTMLNode*)doc;
